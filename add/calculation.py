@@ -71,9 +71,13 @@ class AddCalculation(CalcJob):
         calc_info.local_copy_list = []  # Anything that we have localy and could use
         calc_info.remote_copy_list = []  # Anything that we have remotely and could use
 
+        return calc_info
+
     def write_input_files(self, folder):
         """
         Write input files to the given folder.
         """
         with folder.open(self.options.input_filename, "w", encoding="utf8") as handle:
-            json.dump({"x": self.inputs.x, "y": self.inputs.y}, handle, indent=2)
+            json.dump(
+                {"x": self.inputs.x.value, "y": self.inputs.y.value}, handle, indent=2
+            )
