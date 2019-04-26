@@ -5,6 +5,8 @@ Usage:
     verdi run examples/launch.py
 """
 
+from __future__ import print_function
+
 from aiida.orm import load_code, Float
 from aiida.plugins.factories import CalculationFactory
 from aiida.engine import run

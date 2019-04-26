@@ -2,7 +2,7 @@ import logging
 import json
 
 from aiida.common import exceptions
-from aiida.orm import Float, FolderData
+from aiida.orm import Float
 from aiida.parsers import Parser
 
 
@@ -20,12 +20,14 @@ class AddParser(Parser):
         """
 
         try:
-            output_folder: FolderData = self.retrieved
+            output_folder = self.retrieved
         except exceptions.NotExistent:
             return self.exit_codes.ERROR_NO_RETRIEVED_FOLDER
 
         logger.info(
-            f"This is the contents of the output folder: {output_folder._repository.list_object_names()}"
+            "This is the contents of the output folder: {}".format(
+                output_folder._repository.list_object_names()
+            )
         )
 
         try:

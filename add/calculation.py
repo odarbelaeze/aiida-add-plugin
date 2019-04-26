@@ -78,6 +78,7 @@ class AddCalculation(CalcJob):
         Write input files to the given folder.
         """
         with folder.open(self.options.input_filename, "w", encoding="utf8") as handle:
-            json.dump(
-                {"x": self.inputs.x.value, "y": self.inputs.y.value}, handle, indent=2
+            content = json.dumps(
+                {"x": self.inputs.x.value, "y": self.inputs.y.value}, indent=2
             )
+            handle.write(six.u(content))
