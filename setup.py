@@ -18,5 +18,19 @@ setup(
         "aiida.calculations": ["add.calculation = add.calculation:AddCalculation"],
         "aiida.parsers": ["add.parser = add.parser:AddParser"],
     },
+    classifiers=[
+        "Intended Audience :: Education",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Scientific/Engineering"
+        "Topic :: Scientific/Engineering :: Information Analysis"
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+    ],
 )
 
