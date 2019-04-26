@@ -1,5 +1,7 @@
+import json
 import six
-from aiida.orm import NumericType
+
+from aiida.orm import Float
 from aiida.common import CalcInfo, CodeInfo
 from aiida.engine import CalcJob
 
@@ -30,10 +32,10 @@ class AddCalculation(CalcJob):
             default="add.parser",
             non_db=True,
         )
-        spec.input("x", valid_type=NumericType, help="The left operand")
-        spec.input("y", valid_type=NumericType, help="The rigth operand")
+        spec.input("x", valid_type=Float, help="The left operand")
+        spec.input("y", valid_type=Float, help="The rigth operand")
         spec.output(
-            "sum", valid_type=NumericType, help="The sum of the left and right operands"
+            "sum", valid_type=Float, help="The sum of the left and right operands"
         )
         spec.exit_code(
             100,
@@ -52,4 +54,26 @@ class AddCalculation(CalcJob):
         )
 
     def prepare_for_submission(self, folder):
-        self.write_input_files(folder, self.input.x, self.input.y)
+        """
+        Get ready.
+        """
+        self.write_input_files(folder)
+
+        code_info = CodeInfo()
+        code_info.cmdline_params = [self.options.input_filename, "-"]
+        code_info.stdout_name = self.options.output_filename
+        code_info.code_uuid = self.inputs.code.uuid
+
+        calc_info = CalcInfo()
+        calc_info.uuid = str(self.node.uuid)  # ?
+        calc_info.codes_info = [code_info]
+        calc_info.retrieve_list = [self.options.output_filename]
+        calc_info.local_copy_list = []  # Anything that we have localy and could use
+        calc_info.remote_copy_list = []  # Anything that we have remotely and could use
+
+    def write_input_files(self, folder):
+        """
+        Write input files to the given folder.
+        """
+        with folder.open(self.options.input_filename, "w", encoding="utf8") as handle:
+            json.dump({"x": self.inputs.x, "y": self.inputs.y}, handle, indent=2)
