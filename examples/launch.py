@@ -11,8 +11,16 @@ from aiida.orm import load_code, Float
 from aiida.plugins.factories import CalculationFactory
 from aiida.engine import run
 
+import logging
+
 
 def main():
+    # Log to the console
+    console = logging.StreamHandler()
+    console.setFormatter(logging.Formatter("[%(levelname)s] %(name)s : %(message)s"))
+    logging.getLogger("add").addHandler(console)
+    logging.getLogger("add").setLevel(logging.DEBUG)
+
     code = load_code(label="add@localhost")
     calculation = CalculationFactory("add.calculation")
 

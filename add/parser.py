@@ -32,25 +32,23 @@ class AddParser(Parser):
 
         try:
             # Output filename was an option and became an attribute
-            with output_folder.open(
-                self.node.get_attribute("output_filename"), "r"
-            ) as handle:
-                result = self.parse_output(handle)
+            content = output_folder.open(
+                self.node.get_attribute("output_filename")
+            ).read()
+            result = self.parse_output(content)
         except (OSError, IOError):
             logger.exception("There was an error reading the expected output")
             return self.exit_codes.ERROR_READING_OUTPUT_FILE
-        except json.JSONDecodeError:
-            logger.exception("There was an error reading the JSON output")
+        except ValueError:
+            logger.exception("The output is not a valid float number")
             return self.exit_codes.ERROR_INVALID_OUTPUT
 
-        if "sum" not in result:
-            return self.exit_codes.ERROR_INVALID_OUTPUT
-
-        self.out("sum", Float(result["sum"]))
+        self.out("sum", Float(result))
 
     @staticmethod
-    def parse_output(handle):
+    def parse_output(content):
         """
         Parse a json output from the file handle.
         """
-        return json.load(handle)
+        logger.info("Trying to parse: {}".format(content))
+        return float(content.strip())

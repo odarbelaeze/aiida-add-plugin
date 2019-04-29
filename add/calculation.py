@@ -15,12 +15,6 @@ class AddCalculation(CalcJob):
     def define(cls, spec):
         super(AddCalculation, cls).define(spec)
         spec.input(
-            "metadata.options.input_filename",
-            valid_type=six.string_types,
-            default="aiida.in",
-            non_db=True,
-        )
-        spec.input(
             "metadata.options.output_filename",
             valid_type=six.string_types,
             default="aiida.out",
@@ -57,10 +51,12 @@ class AddCalculation(CalcJob):
         """
         Get ready.
         """
-        self.write_input_files(folder)
+
+        # We wont write anything to the `folder` since the program takes
+        # input as commandline parameters
 
         code_info = CodeInfo()
-        code_info.cmdline_params = [self.options.input_filename, "-"]
+        code_info.cmdline_params = [str(self.inputs.x.value), str(self.inputs.y.value)]
         code_info.stdout_name = self.options.output_filename
         code_info.code_uuid = self.inputs.code.uuid
 
@@ -72,13 +68,3 @@ class AddCalculation(CalcJob):
         calc_info.remote_copy_list = []  # Anything that we have remotely and could use
 
         return calc_info
-
-    def write_input_files(self, folder):
-        """
-        Write input files to the given folder.
-        """
-        with folder.open(self.options.input_filename, "w", encoding="utf8") as handle:
-            content = json.dumps(
-                {"x": self.inputs.x.value, "y": self.inputs.y.value}, indent=2
-            )
-            handle.write(six.u(content))
